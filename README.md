@@ -4,11 +4,13 @@ Repository: https://github.com/macoconut09/ML_FinalProject
 
 ## Project Overview
 
-This project compares several machine learning models for ENSO forecasting. The task is treated as a supervised regression problem, where recent Sea Surface Temperature (SST) values from the Nino 3.4 region are used to predict the next monthly SST value.
+This project studies short-term ENSO forecasting as a supervised regression problem. Using the previous 12 months of standardized Nino 3.4 sea surface temperature (SST) values, the task is to predict the next month's SST value.
 
-The main goal is to compare a simple baseline against more complex models. Ordinary Least Squares (OLS) Linear Regression is used as the baseline, while CART, Random Forest, XGBoost, and a 1D Convolutional Neural Network (CNN) are tested as non-linear and deep learning approaches.
+The practical motivation is that ENSO affects global climate variability, disaster risk, agriculture, and economic planning. Better short-term forecasts can support earlier preparation for El Nino and La Nina impacts.
 
-The best test result came from the OLS model, with an $R^2$ score of 0.9461. In this dataset, the short-term SST pattern appears to be captured well by the previous 12 months, so the more complex models did not perform better here.
+The technical goal is to compare an interpretable OLS baseline against more complex non-linear models and a 1D CNN used as the study's SOTA deep learning representative. The comparison tests whether the SOTA model and other non-linear methods can capture temporal patterns that a simple linear model might miss.
+
+In the final results, OLS achieved the best test score with an $R^2$ of 0.9461. This suggests that, for this dataset and one-month-ahead setup, short-term SST persistence was captured very well by the previous 12 months.
 
 ## Dataset & Preprocessing
 
@@ -28,15 +30,15 @@ Preprocessing steps:
 
 Models used in the project:
 
-- **OLS Linear Regression**: Baseline model for checking how much predictive value comes from recent SST persistence.
+- **OLS Linear Regression**: Interpretable baseline model for checking how much predictive value comes from recent SST persistence.
 - **CART Decision Tree**: Single decision-tree model for non-linear regression.
 - **Random Forest Regressor**: Ensemble of decision trees trained with bagging.
 - **XGBoost Regressor**: Gradient boosting model for tabular regression.
-- **1D CNN**: Neural network model for learning patterns from the 12-month sequence.
+- **1D CNN**: SOTA deep learning representative for learning patterns from the 12-month sequence.
 
 ## Key Results
 
-OLS had the best test-set performance. The tree-based models performed very well on the training set but dropped on the test set, which points to overfitting. The 1D CNN gave reasonable results, but its predictions were smoother during stronger ENSO phases.
+OLS had the best test-set performance. The tree-based models performed very well on the training set but dropped on the test set, which points to overfitting. The 1D CNN served as the SOTA representative and gave reasonable results, but it did not outperform the linear baseline.
 
 | Model | Test RMSE | Test MAE | Test $R^2$ |
 |---|---:|---:|---:|
@@ -50,7 +52,7 @@ Best model:
 
 **OLS Linear Regression** achieved RMSE = 0.2367, MAE = 0.1810, and $R^2$ = 0.9461 on the unseen chronological test set.
 
-## Setup & Installation
+## Setup & Reproducibility
 
 Clone the repository:
 
@@ -72,13 +74,13 @@ Install the required data science libraries:
 pip install pandas numpy matplotlib scikit-learn xgboost tensorflow notebook
 ```
 
-Run the notebooks in this order:
+To reproduce the processed data, model metrics, prediction CSVs, and plots, run:
 
-1. `notebooks/Data_Preparation.ipynb`
-2. `notebooks/OLS_Linear_Regression.ipynb`
-3. `notebooks/CART_Decision_Tree.ipynb`
-4. `notebooks/Ensemble_Models.ipynb`
-5. `notebooks/CNN_1D_Model.ipynb`
+```text
+notebooks/ENSO_Forecasting_All_Models.ipynb
+```
+
+This notebook contains the full workflow from data preparation to final model comparison. Tree-based models use `random_state=42`. The CNN sets NumPy and TensorFlow seeds, but neural-network results may still vary slightly across hardware or TensorFlow versions.
 
 ## Repository Structure
 
@@ -90,19 +92,24 @@ ML_FinalProject/
 |   |-- X_test.csv
 |   |-- y_train.csv
 |   |-- y_test.csv
-|   |-- model_comparison_metrics.csv
-|   |-- *_metrics.csv
-|   |-- *_test_predictions.csv
-|   `-- *.png
+|   `-- model_comparison_metrics.csv
 `-- notebooks/
-    |-- Data_Preparation.ipynb
-    |-- OLS_Linear_Regression.ipynb
-    |-- CART_Decision_Tree.ipynb
-    |-- Ensemble_Models.ipynb
-    `-- CNN_1D_Model.ipynb
+    `-- ENSO_Forecasting_All_Models.ipynb
 ```
 
 ## AI Use Disclosure
 
-AI-assisted: Initial code structure and implementation were drafted with Codex.
-Human edits: Adapted for the ENSO dataset, selected features and targets, verified outputs, and tuned evaluation.
+This project used AI assistance as a programming and review aid, not as a replacement for project understanding or final authorship.
+
+AI-assisted portions:
+
+- Drafting notebook scaffolds for data loading, model fitting, metric calculation, plotting, and CSV export.
+- Debugging environment issues involving TensorFlow and XGBoost installation.
+- Standardizing notebook structure, metric names, and result-table formatting across models.
+- Reviewing the manuscript and README for consistency with the implemented experiments.
+
+Human-directed portions:
+
+- Selection of the ENSO forecasting problem, NOAA ERSSTv5 Nino 3.4 dataset, 12-month sliding-window setup, and supervised regression framing.
+- Final decisions on model families, evaluation metrics, chronological train/test splitting, and interpretation of results.
+- Verification of generated outputs, comparison of model behavior, and final inclusion of results in the manuscript.
